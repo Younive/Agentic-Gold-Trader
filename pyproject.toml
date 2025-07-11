@@ -1,0 +1,32 @@
+# pyproject.toml
+
+[project]
+name = "gold-trading-agent"
+version = "0.1.0"
+description = "An agentic AI assistant for gold trading analysis."
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.8"
+
+# Your project's core dependencies
+dependencies = [
+    "langgraph",
+    "langchain",
+    "langchain_google_genai",
+    "firecrawl-py",
+    "alpha_vantage",
+    "python-dotenv",
+    "pandas",
+    "pdfplumber",
+    "pandas-ta",  # <-- Added this line
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "black",
+]
+
+# Example: Configuring a tool like the 'ruff' linter
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I"]

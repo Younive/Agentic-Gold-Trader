@@ -1,0 +1,9 @@
+numpy==1.22.4
+pandas==2.2.3
+pandas_ta==0.3.14b0
+langgraph
+langchain
+langchain_google_genai
+firecrawl-py
+alpha_vantage
+python-dotenv

@@ -1,52 +1,28 @@
-import os
-from firecrawl import FirecrawlApp, ScrapeOptions
 from config import firecrawl_app
 
 class FirecrawlService:
     def __init__(self):
         self.app = firecrawl_app
 
-    def search_fundamental(self, query: str):
+    def search(self, query: str):
+        """
+        Performs a generic search using Firecrawl.
+        """
         try:
-            options = ScrapeOptions(
-                query=query,
-                num_results=5,
-                include_images=False,
-                include_videos=False,
-                include_news=False
-            )
-            results = self.app.search(options)
+            results = self.app.search(query=query, num_results=5)
             return results
         except Exception as e:
-            print(f"Error during Firecrawl search: {e}")
+            print(f"Error during Firecrawl search for '{query}': {e}")
             return []
         
-    def search_oi(self, query: str):
+    def scrape(self, url: str, **kwargs):
+        """
+        Performs a scrape using Firecrawl, accepting flexible keyword arguments.
+        """
         try:
-            options = ScrapeOptions(
-                query=query,
-                num_results=5,
-                include_images=False,
-                include_videos=False,
-                include_news=False
-            )
-            results = self.app.search(options)
+            # **kwargs will correctly pass arguments like 'page_options' or 'extraction_options'
+            results = self.app.scrape_url(url=url, **kwargs)
             return results
         except Exception as e:
-            print(f"Error during Firecrawl search: {e}")
-            return []
-        
-    def search_retail_sentiment(self, query: str):
-        try:
-            options = ScrapeOptions(
-                query=query,
-                num_results=5,
-                include_images=False,
-                include_videos=False,
-                include_news=False
-            )
-            results = self.app.search(options)
-            return results
-        except Exception as e:
-            print(f"Error during Firecrawl search: {e}")
-            return []
+            print(f"Error during Firecrawl scrape for '{url}': {e}")
+            return None

@@ -15,6 +15,7 @@ def technical_analyst_agent(state):
         
         # Alpha Vantage data comes in reverse chronological order, so we sort it
         data = data.sort_index(ascending=True)
+        data.columns = [col.split('. ')[1] if '. ' in col else col for col in data.columns]
         
         # Calculate indicators
         data.ta.ema(length=200, append=True)  # Exponential Moving Average

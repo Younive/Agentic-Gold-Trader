@@ -19,4 +19,4 @@ def market_sentiment_analyst_agent(state):
     
     response = llm.invoke(prompt)
     
-    return {"sentiment_analysis": response.content}
+    return {"market_sentiment_analysis": response.content}

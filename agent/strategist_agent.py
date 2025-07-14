@@ -7,7 +7,7 @@ def strategist_agent(state):
     prompt = PromptCollection.CheifStatistician(
         fundamental_analysis=state['fundamental_analysis'],
         technical_analysis=state['technical_analysis'],
-        sentiment_analysis=state['market_sentiment_analysis'],
+        market_sentiment_analysis=state['market_sentiment_analysis'],
         oi_analysis=state['oi_analysis']
     )
     

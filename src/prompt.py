@@ -54,13 +54,13 @@ class PromptCollection:
         """
     
     @staticmethod
-    def RetailSentimentAnalysis(retail_sentiment: str) -> str:
+    def RetailSentimentAnalysis(scraped_data: str) -> str:
         return f"""
         Analyze the following retail sentiment data for Gold (GLD) and provide a concise interpretation.
         Based *only* on this data, what is the likely short-term trend?
 
         **Retail Sentiment Data:**
-        {retail_sentiment}
+        {scraped_data}
 
         **Interpretation Guide:**
         - **Retail Sentiment Score:** Is it positive, negative, or neutral? Positive suggests bullish sentiment.
@@ -87,7 +87,7 @@ class PromptCollection:
         """
     
     @staticmethod
-    def CheifStatistician(fundamental_analysis: str, technical_analysis: str, sentiment_analysis: str, oi_analysis:str) -> str:
+    def CheifStatistician(fundamental_analysis: str, technical_analysis: str, market_sentiment_analysis: str, oi_analysis:str) -> str:
         return f"""
         You are the Chief Statistician for the Agentic Gold Trader. Your task is to analyze the provided data and provide a concise summary of the likely short-term trend for Gold (GLD).
 
@@ -98,7 +98,7 @@ class PromptCollection:
         {technical_analysis}
 
         **Market Sentiment Analysis:**
-        {sentiment_analysis}
+        {market_sentiment_analysis}
 
         **Open Interest Analysis:**
         {oi_analysis}

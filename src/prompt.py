@@ -21,16 +21,33 @@ class PromptCollection:
     @staticmethod
     def FundamentalAnalysis(scraped_data: str) -> str:
         return f"""
-        Analyze the following fundamental data for Gold (GLD) and provide a concise interpretation.
-        Based *only* on this data, what is the likely short-term trend?
+        You are a Senior Macro Strategist specializing in XAU/USD (Gold). Your role is to convert raw news data into a precise numerical trading signal.
 
-        **Fundamental Data:**
+        **Context & Correlation Rules:**
+        - Gold is inversely correlated with the US Dollar (DXY) and Real Treasury Yields.
+        - Gold acts as a safe haven during high geopolitical uncertainty.
+        - Hawkish Fed policy (higher rates) is generally bearish for Gold.
+
+        **Input Data:**
         {scraped_data}
 
-        **Interpretation Guide:**
-        - **Economic Indicators:** Focus on inflation rates, interest rates, and geopolitical events.
-        - **Supply and Demand:** Are there any significant changes in gold supply or demand?
-        - **Market Conditions:** Consider how these factors might influence gold prices in the short term.
+        **Execution Steps:**
+        1. **Filter:** Discard irrelevant news or duplicate stories. Prioritize news from the last 24 hours.
+        2. **Impact Analysis:** For each valid news item, assess its impact on:
+           - US Dollar Strength (DXY)
+           - US Treasury Yields
+           - Global Risk Sentiment (VIX)
+        3. **Synthesis:** Weigh conflicting signals. (e.g., "Strong CPI" (Bearish) vs. "War Escalation" (Bullish)). Determine which driver is currently dominant.
+
+        **Output Constraints:**
+        Return the result strictly in JSON format. Do not add markdown formatting or conversational filler.
+        {{
+            "score": <float between -1.0 and 1.0>,
+            "confidence": <float between 0.0 and 1.0>,
+            "primary_driver": "<The single most important factor driving this score>",
+            "reasoning_summary": "<Max 2 concise sentences explaining the decision>",
+            "risk_factors": ["<List 1-3 potential risks to this view>"]
+        }}
         """
     
     @staticmethod

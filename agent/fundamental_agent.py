@@ -36,9 +36,7 @@ def fundamental_analyst_agent(state):
 
     combined_data = "\n\n".join(all_scraped_data)
 
-    prompt = PromptCollection.FundamentalAnalysis(
-        scraped_data=combined_data,
-    )
+    prompt = PromptCollection.FundamentalAnalysis(scraped_data=combined_data)
 
     fundamental_analysis = llm.with_structured_output(FundamentalAnalysisResult)
     response = fundamental_analysis.invoke(prompt)

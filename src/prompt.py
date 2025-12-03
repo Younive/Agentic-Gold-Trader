@@ -4,18 +4,33 @@ class PromptCollection:
     @staticmethod
     def TechnicalAnalysis(analysis: str) -> str:
         return f"""
-        Analyze the following technical indicator data for Gold (GLD) and provide a concise interpretation.
-        Based *only* on this data, what is the likely short-term trend?
+        You are a Senior Technical Analyst specializing in Gold (XAU/USD).
+        Your sole purpose is to convert technical indicator data into a binary trading signal with a confidence score.
 
-        **Indicator Data:**
+        **HIERARCHY OF ANALYSIS (Order of Operations):**
+        1. **Regime Filter (ADX & ATR):**
+           - IF ADX < 20: Market is "Ranging/Choppy". IGNORE all Trend indicators (EMA/MACD). Focus ONLY on Oscillators (RSI) for mean reversion.
+           - IF ADX > 25: Market is "Trending". Prioritize EMA and MACD. Ignore Overbought/Oversold on RSI (strong trends stay overbought).
+           - ATR Context: High ATR (> average) implies wider stops needed.
+
+        2. **Trend Confirmation (EMAs):**
+           - Price > 50 EMA = Bullish Bias.
+           - Price < 50 EMA = Bearish Bias.
+
+        3. **Momentum Trigger (MACD & RSI):**
+           - MACD Histogram flipping positive = Bullish Momentum.
+           - RSI Divergence (Price Lower Low, RSI Higher Low) is the strongest reversal signal.
+
+        **INPUT DATA (JSON):**
         {analysis}
 
-        **Interpretation Guide:**
-        - **Price vs EMA:** Is the price above or below the 50-day EMA? Above is generally bullish.
-        - **MACD Histogram:** Is it positive or negative? Positive suggests bullish momentum.
-        - **RSI:** Is it below 30 (oversold), above 70 (overbought), or neutral?
-        - **ATR:** This represents volatility. Just state the value.
-        - **ADX:** Is it above 25? If so, it indicates a strong trend (either up or down). If below 20, the trend is weak.
+        **OUTPUT SCHEMA (JSON Only):**
+        Return ONLY a JSON object. No markdown, no conversational text.
+        {{
+            "market_regime": "TRENDING_BULLISH" | "TRENDING_BEARISH" | "RANGING_CHOPPY",
+            "suggested_trade": "BUY" | "SELL",
+            "reasoning": "<Max 1 sentence summary>"
+        }}
         """
     
     @staticmethod

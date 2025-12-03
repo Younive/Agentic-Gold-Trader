@@ -8,10 +8,7 @@ from alpha_vantage.timeseries import TimeSeries
 load_dotenv()
 
 # Initialize the LLM client
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 
 # Initialize the Firecrawl client
 firecrawl_app = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
-
-# Initialize the Alpha Vantage client
-alpha_vantage_ts = TimeSeries(key=os.environ["ALPHA_VANTAGE_API_KEY"], output_format='pandas')

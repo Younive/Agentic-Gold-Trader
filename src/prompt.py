@@ -4,34 +4,72 @@ class PromptCollection:
     @staticmethod
     def TechnicalAnalysis(analysis: str) -> str:
         return f"""
-        You are a Senior Technical Analyst specializing in Gold (XAU/USD).
-        Your sole purpose is to convert technical indicator data into a binary trading signal with a confidence score.
+    You are a Senior Technical Analyst specializing in Gold (XAU/USD).
+    Your goal is to synthesize multiple technical factors into a high-probability trading signal.
+    
+    **HIERARCHY OF ANALYSIS (Strict Order of Operations):**
+    
+    1. **Market Regime (The Filter):**
+       Use adx and atr jointly:
+       - RANGING if adx < 20 or atr < 20
+       - TRENDING if adx > 25 or atr > 25
+       Action:
+       - In Ranging markets → Focus on mean reversion (reversal setups at support/resistance).
+       - In Trending markets → Focus on trend continuation (pullback or breakout setups).
+    
+    2. **Trend Direction (The Bias):**
+       Evaluate directional structure using EMAs:
+       - price > ema_50 → Short-term bullish bias
+       - price > ema_100 → Long-term bullish bias
+       - ema_50 > ema_100 → Confirmed bullish structure
+       - Reverse all conditions for bearish bias.
+       - If mixed signals, bias = neutral / consolidation.
+    
+    3. **Area of Value (Location):**
+        Assess whether price is at a high-probability reaction zone:
+        - Order Blocks (SMC): Inside or retesting nearest_order_block?
+        - Fibonacci Retracement: Price within 0.5, 0.618, 0.786 or 0.886 zone?
+        - Support / Resistance: Price near nearest_support (for longs) or nearest_resistance (for shorts)?
+        - Confluence Strength: Multiple overlapping signals (e.g., OB + Fib + EMA zone) = double-weight confluence.
+    
+    4. **Momentum Trigger (The Timing):**
+       Confirm entry timing using oscillators:
+       - RSI:
+         - In Uptrend → RSI < 40 = Buy Pullback
+         - In Range → RSI > 70 = Sell, RSI < 30 = Buy
+       - MACD: Histogram color flip = momentum shift
+       - Stochastic:
+         - In Uptrend → < 20 = Buy pullback
+         - In Range → > 80 = Sell, < 20 = Buy
+    
+    5. **Volatility Confirmation — Market Pressure:**
+       Use atr to confirm volatility consistency:
+       - atr < 20 → low volatility, expect range traps → wait for clearer structure
+       - atr > 25 → strong volatility, validate trend-following setups
+    
+    **INPUT DATA (JSON):**
+    {analysis}
 
-        **HIERARCHY OF ANALYSIS (Order of Operations):**
-        1. **Regime Filter (ADX & ATR):**
-           - IF ADX < 20: Market is "Ranging/Choppy". IGNORE all Trend indicators (EMA/MACD). Focus ONLY on Oscillators (RSI) for mean reversion.
-           - IF ADX > 25: Market is "Trending". Prioritize EMA and MACD. Ignore Overbought/Oversold on RSI (strong trends stay overbought).
-           - ATR Context: High ATR (> average) implies wider stops needed.
-
-        2. **Trend Confirmation (EMAs):**
-           - Price > 50 EMA = Bullish Bias.
-           - Price < 50 EMA = Bearish Bias.
-
-        3. **Momentum Trigger (MACD & RSI):**
-           - MACD Histogram flipping positive = Bullish Momentum.
-           - RSI Divergence (Price Lower Low, RSI Higher Low) is the strongest reversal signal.
-
-        **INPUT DATA (JSON):**
-        {analysis}
-
-        **OUTPUT SCHEMA (JSON Only):**
-        Return ONLY a JSON object. No markdown, no conversational text.
-        {{
-            "market_regime": "TRENDING_BULLISH" | "TRENDING_BEARISH" | "RANGING_CHOPPY",
-            "suggested_trade": "BUY" | "SELL",
-            "reasoning": "<Max 1 sentence summary>"
-        }}
-        """
+    **INSTRUCTIONS**
+    - Use the hierarchy strictly — no skipping steps.
+    - Base signal on confluence strength + market regime alignment.
+    - Confidence scoring:
+        - 0.8–1.0 = Strong multi-factor confluence
+        - 0.5–0.79 = Moderate agreement
+        - < 0.5 = Conflicting signals → “WAIT”
+    - Avoid repeating technical jargon in reasoning; summarize logic naturally.
+    
+    **OUTPUT SCHEMA (JSON Only):**
+    Return ONLY a JSON object. No markdown.
+    {{
+        "market_regime": "TRENDING_BULLISH" | "TRENDING_BEARISH" | "RANGING",
+        "signal": "BUY" | "SELL" | "WAIT",
+        "confidence_score": <float 0.0 to 1.0>,
+        "setup_type": "PULLBACK_TO_OB" | "BREAKOUT" | "MEAN_REVERSION_RANGE" | "NONE",
+        "confluence_factors": ["List factors e.g., 'Price at 0.618 Fib', 'Bullish OB retest'"],
+        "reasoning": "<Max 1 sentence summary>"
+    }}
+    """
     
     @staticmethod
     def FundamentalAnalysis(scraped_data: str) -> str:
@@ -121,20 +159,36 @@ class PromptCollection:
     @staticmethod
     def CheifStatistician(fundamental_analysis: str, technical_analysis: str, market_sentiment_analysis: str, oi_analysis:str) -> str:
         return f"""
-        You are the Chief Statistician for the Agentic Gold Trader. Your task is to analyze the provided data and provide a concise summary of the likely short-term trend for Gold (GLD).
+        You are the Risk & Strategy Manager for an Algorithmic Trading Bot.
+        Your job is NOT to predict the market, but to adjudicate conflicting signals based on our "Conservative Strategy" rules.
 
-        **Fundamental Analysis:**
-        {fundamental_analysis}
+        **INPUT DATA:**
+        1. Fundamental Bias: {fundamental_analysis}
+        2. Technical Levels: {technical_analysis}
+        3. Sentiment: {retail_sentiment_analysis}
+        4. Order Flow: {oi_analysis}
 
-        **Technical Analysis:**
-        {technical_analysis}
+        **STRATEGY CONSTITUTION (The Rules):**
+        1. **Confluence Check:** You may ONLY signal a trade if at least 3 out of 4 inputs agree on direction.
+           - If inputs conflict (e.g., Fundamentals says UP, Technicals says DOWN) -> Result: "WAIT".
+        2. **Entry Selection:**
+           - If BUY: Entry MUST be the nearest 'support_level' from input #2.
+           - If SELL: Entry MUST be the nearest 'resistance_level' from input #2.
+           - DO NOT invent prices. Use the explicit numbers provided in the Technical Analysis JSON.
+        3. **Risk Management:**
+           - Stop Loss (SL) MUST be calculated as: Entry Price +/- (1.5 * ATR provided in input).
+           - Take Profit (TP) MUST be calculated as: Entry Price +/- (3.0 * ATR provided in input).
 
-        **Market Sentiment Analysis:**
-        {market_sentiment_analysis}
-
-        **Open Interest Analysis:**
-        {oi_analysis}
-
-        Based on this data, what is the likely short-term trend for Gold (GLD)? 
-        Provide your final decision as one of these three options: GO LONG (BUY), GO SHORT (SELL), or STAY NEUTRAL (HOLD).
+        **OUTPUT TASK:**
+        Evaluate the inputs against the Rules. Return the decision in JSON.
+        {{
+            "decision": "long" | "short" | "wait",
+            "confidence_score": <0.0 to 1.0>,
+            "entry_limit_price": <float: extracted from technical_analysis.support/resistance>,
+            "stop_loss": <float: calculated based on rule #3>,
+            "take_profit": <float: calculated based on rule #3>,
+            "violated_rules": ["<List any rules that failed, e.g. 'Conflict between Fund/Tech'>"],
+            "reasoning": "<Concise explanation>"
+        }}
         """
+        

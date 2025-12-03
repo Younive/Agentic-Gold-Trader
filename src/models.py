@@ -24,3 +24,9 @@ class FundamentalAnalysisResult(BaseModel):
     primary_driver: str = Field(description="The single most important factor driving this score")
     reasoning_summary: str = Field(description="Max 2 concise sentences explaining the decision")
     risk_factors: list[str] = Field(description="List 1-3 potential risks to this view")
+
+class TechnicalAnalysisResult(BaseModel):
+    market_regime: str = Field(description="Market regime: TRENDING_BULLISH, TRENDING_BEARISH, or RANGING_CHOPPY")
+    suggested_trade: str = Field(description="BUY or SELL")
+    confidence_level: str = Field(description="Confidence Level: Low, Medium, or High")
+    reasoning: str = Field(description="Max 1 sentence summary")

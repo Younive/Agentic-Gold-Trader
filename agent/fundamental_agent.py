@@ -1,6 +1,7 @@
 from config import llm
 from src.prompt import PromptCollection
 from src.firecrawl import FirecrawlService
+from src.models import FundamentalAnalysisResult
 
 def fundamental_analyst_agent(state):
     """
@@ -9,18 +10,36 @@ def fundamental_analyst_agent(state):
     firecrawl_service = FirecrawlService()
     print("Agent: Fundamental Analyst is running...")
     
-    # Use the service to scrape with the correct keyword argument
-    scraped_data = firecrawl_service.scrape(
-        url='https://www.reuters.com/markets/gold/', 
-        only_main_content=True
-    )
+    urls = [
+        'https://www.reuters.com/markets/gold/',
+        'https://www.kitco.com/news/category/commodities/gold',
+        'https://www.fxstreet.com/news?q=&hPP=17&idx=FxsIndexPro&p=0&dFR%5BCategory%5D%5B0%5D=News&dFR%5BTags%5D%5B0%5D=Commodities&dFR%5BTags%5D%5B1%5D=Gold'
+    ]
+
+    all_scraped_data = []
+
+    for url in urls:
+        print(f"Scraping {url}...")
+        try:
+            # Use the service to scrape with the correct keyword argument
+            scraped_data = firecrawl_service.scrape(
+                url=url, 
+                only_main_content=True
+            )
+            if scraped_data:
+                all_scraped_data.append(f"Source: {url}\nData: {scraped_data}")
+        except Exception as e:
+            print(f"Failed to scrape {url}: {e}")
     
-    if not scraped_data:
-        return {"fundamental_analysis": "Failed to scrape fundamental news."}
+    if not all_scraped_data:
+        return {"fundamental_analysis": "Failed to scrape fundamental news from all sources."}
+
+    combined_data = "\n\n".join(all_scraped_data)
 
     prompt = PromptCollection.FundamentalAnalysis(
-        scraped_data=scraped_data,
+        scraped_data=combined_data,
     )
-    
-    response = llm.invoke(prompt)
-    return {"fundamental_analysis": response.content}
+
+    fundamental_analysis = llm.with_structured_output(FundamentalAnalysisResult)
+    response = fundamental_analysis.invoke(prompt)
+    return response

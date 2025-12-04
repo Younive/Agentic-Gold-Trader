@@ -27,4 +27,3 @@ class TradingState(TypedDict):
     entry_price: float
     stop_loss: float
     take_profit: float
-    position_size: float

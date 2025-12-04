@@ -9,4 +9,4 @@ from agent.technical_analyst_agent import technical_analyst_agent
 mock_state = {}
 
 result = technical_analyst_agent(mock_state)
-print(result)
+print(result.technical_analysis)

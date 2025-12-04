@@ -67,7 +67,9 @@ class PromptCollection:
         "confidence_score": <float 0.0 to 1.0>,
         "setup_type": "PULLBACK_TO_OB" | "BREAKOUT" | "MEAN_REVERSION_RANGE" | "NONE",
         "confluence_factors": ["List factors e.g., 'Price at 0.618 Fib', 'Bullish OB retest'"],
-        "reasoning": "<Max 1 sentence summary>"
+        "reasoning": "<Max 1 sentence summary>",
+        "risk_factors": ["List 1-3 potential risks to this view"],
+        "suggest_entry_price": <float>
     }}
     """
     
@@ -104,26 +106,6 @@ class PromptCollection:
         """
     
     @staticmethod
-    def MarketSentimentAnalysis(news_summary: str, search_results: str) -> str:
-        return f"""
-        You are a market sentiment analyst. Your goal is to determine the net sentiment for gold (XAU/USD).
-
-        You have two sources of information:
-        1.  **News Summary:** A factual summary of recent major financial news.
-        2.  **Web Search Results:** Current articles and discussions about gold market sentiment.
-
-        Analyze both sources and synthesize them into a "Net Sentiment" score. State whether the overall sentiment is **Bullish**, **Bearish**, or **Neutral** and provide a brief justification for your conclusion based on the combined information.
-
-        ---
-        **Source 1: News Summary**
-        {news_summary}
-        ---
-        **Source 2: Web Search Results**
-        {search_results}
-        ---
-        """
-    
-    @staticmethod
     def RetailSentimentAnalysis(scraped_data: str) -> str:
         return f"""
         Analyze the following retail sentiment data for Gold (GLD) and provide a concise interpretation.
@@ -141,19 +123,93 @@ class PromptCollection:
     @staticmethod
     def OpenInterestAnalysis(pdf_text: str) -> str:
         return f"""
-        You are a data analyst. From the provided text of an Open Interest report, perform the following tasks:
+        You are an expert Institutional Derivatives Strategist specializing in interpreting **CME QuikStrike "Vol2Vol" reports**. You possess the unique ability to reconstruct precise market context from unstructured, messy OCR text extracted from financial charts.
 
-        1.  **Find Total Calls OI:** Locate the "Calls" table and find the total "OPEN INTEREST" for all strike prices combined.
-        2.  **Find Total Puts OI:** Locate the "Puts" table and find the total "OPEN INTEREST" for all strike prices combined.
-        3.  **Calculate Total OI:** Sum the total Calls and Puts Open Interest together.
-        4.  **Analyze and Interpret:** Based on the total open interest, provide a brief analysis. A high number of open interest contracts indicates high liquidity and trader attention.
+        Your goal is to decode the "Intraday Volume" and "Vol Settle" data to construct a high-probability **Gold (XAU/USD) CFD Trading Plan**.
 
-        **Report Text:**
+        ### **CORE PHILOSOPHY & RULES**
+
+        1.  **The Header is the "Source of Truth":**
+            * The specific line containing `Put: [Val]`, `Call: [Val]`, `Vol: [Val]`, `Vol Chg: [Val]`, and `Future: [Price]` is the highest authority. Use these numbers to override any conflicting scattered data.
+
+        2.  **Market Regime Logic:**
+            * **Spot UP / Vol DOWN:** "Grinding Bull." Safe to buy dips. Market is relaxing as price rises.
+            * **Spot DOWN / Vol UP:** "Fear/Panic." Sell rallies. Market is hedging aggressively.
+            * **Spot UP / Vol UP:** "Explosive/Unstable." High risk of reversals. Caution required.
+            * **Spot DOWN / Vol DOWN:** "Drift/Liquidation." Low conviction. Range-bound.
+
+        3.  **The "Magnet" (Vol Settle):**
+            * Scan the text for the list of Volatility numbers (usually on the Y-axis, e.g., 22.00, 24.50, 28.00).
+            * Identify the **LOWEST** volatility value. The Strike Price associated with this low volatility is the "Magnet." The price will gravitate here to find stability.
+
+        4.  **The "Rule of 25" (Institutional Pivots):**
+            * Institutions execute block trades at **$25 increments** (e.g., 4225, 4250, 4275).
+            * You must identify the nearest $25 levels to the current Futures Price and mark them as tactical pivots.
+
         ---
+
+        ### **ANALYSIS PROTOCOL (Step-by-Step)**
+
+        **STEP 1: Data Extraction (The Scan)**
+        * **Locate Header:** Find `Put:`, `Call:`, `Vol:`, `Vol Chg:`, `Future:`.
+        * **Locate Strikes:** Scan the bottom of the text for 4-digit numbers (e.g., 4100, 4150, 4200). Identify the range.
+        * **Locate Volume Nodes:** Look for high integers (e.g., 150, 175, 540) appearing near specific strikes. These are your "Battlefields."
+
+        **STEP 2: Regime & Bias Calculation**
+        * Compare `Puts` vs `Calls`. (e.g., If Puts > Calls but Price is Up = Short Squeeze Potential).
+        * Analyze `Vol Chg`. (Negative = Stabilizing, Positive = Expanding Range).
+
+        **STEP 3: Level Mapping**
+        * **The Anchor:** The current `Future` price.
+        * **The Resistance:** The nearest Strike ABOVE the anchor with high volume data.
+        * **The Support:** The nearest Strike BELOW the anchor with high volume data.
+        * **The Magnet:** The Strike zone with the lowest implied volatility.
+
+        ---
+
+        ### **OUTPUT FORMAT (Strict Adherence)**
+
+        Please generate the response in the following structured format:
+
+        # 📊 INST. DERIVATIVES STRATEGY (Vol2Vol)
+
+        ### 1. MARKET REGIME DECODER
+        * **Trend Status:** Futures @ **[Price]** | Change: **[+/- Amount]**
+        * **Volatility State:** **[Vol Value]** | Change: **[+/- Vol Chg]**
+        * **Sentiment:** **[NAME OF REGIME, e.g., "Grinding Bull"]**
+        * *Interpretation:* [One sentence explaining if we are buying dips or selling rips based on Vol Chg].
+        * **Flow Balance:** Puts **[Count]** vs Calls **[Count]**. ([Interpretation of the ratio]).
+
+        ### 2. STRATEGIC LEVELS (The Map)
+        * **🧲 THE MAGNET (Stability Zone):** **[Strike Zone]**
+        * *Logic:* Lowest Volatility basin found at [Value]. Price wants to rest here.
+        * **🧱 RESISTANCE (Ceiling):** **[Strike]**
+        * *Note:* [Comment on volume intensity here if visible].
+        * **🛡️ SUPPORT (Floor):** **[Strike]**
+        * *Note:* [Comment on volume intensity here if visible].
+        * **⚙️ INSTITUTIONAL PIVOTS (The 25s):**
+        * Upper Pivot: **[Nearest x25 or x75 above]**
+        * Lower Pivot: **[Nearest x25 or x75 below]**
+
+        ### 3. CFD BATTLE PLAN
+        * **Current Basis:** Analysis is based on Futures Price **[Future Price]**. *Trader must apply +/- Diff to Spot.*
+
+        **⚔️ SCENARIO A: The "Magnet" Play (Primary)**
+        * **Trigger:** If price drifts to **[Institutional Pivot or Support]**...
+        * **Action:** **BUY/SELL** targeting **[The Magnet Level]**.
+        * **Confirmation:** Watch for **[e.g., Low Volatility/Consolidation]**.
+
+        **⚔️ SCENARIO B: The "Vol Wall" Breakout (Aggressive)**
+        * **Trigger:** If price pushes through **[Resistance Strike]** with High Volume...
+        * **Action:** **FOLLOW TREND** targeting next $25 increment.
+        * **Invalidation:** If Vol Chg flips to **[Opposite Direction]**.
+
+        **⚠️ RISK WARNING:**
+        * [Specific warning based on Put/Call skew or Vol regime, e.g., "Heavy Put Skew suggests sudden drops are likely to be bought aggressively."]
+
+        ---
+        **INPUT DATA:**
         {pdf_text}
-        ---
-
-        Provide the total OI number and your brief interpretation.
         """
     
     @staticmethod

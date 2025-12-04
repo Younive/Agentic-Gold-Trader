@@ -20,7 +20,6 @@ class FirecrawlService:
         Performs a scrape using Firecrawl, accepting flexible keyword arguments.
         """
         try:
-            # **kwargs will correctly pass arguments like 'page_options' or 'extraction_options'
             results = self.app.scrape_url(url=url, **kwargs)
             return results
         except Exception as e:

@@ -3,7 +3,7 @@ import numpy as np
 from config import llm
 from src.prompt import PromptCollection
 from src.fetch_mt5_data import get_data
-from src.models import TechnicalAnalysisResult
+from src.models import TradingState
 from smartmoneyconcepts import smc
 from scipy.signal import find_peaks
 
@@ -79,11 +79,11 @@ def technical_analyst_agent(state):
         # Use the LLM for a qualitative interpretation
         prompt = PromptCollection.TechnicalAnalysis(combine_data)
         
-        # technical_analysis = llm.with_structured_output(TechnicalAnalysisResult)
-        # response = technical_analysis.invoke(prompt)
         response = llm.invoke(prompt)
+
+        state["technical_analysis"] = response.content
 
     except Exception as e:
          print(f"Could not perform technical analysis: {e}")
 
-    return response.content
+    return state

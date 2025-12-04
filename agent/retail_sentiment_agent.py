@@ -1,6 +1,6 @@
 from config import llm, firecrawl_app
 from src.prompt import PromptCollection
-from src.firecrawl import FirecrawlService
+from src.firecrawl_service import FirecrawlService
 
 def retail_sentiment_agent(state):
     """
@@ -26,4 +26,5 @@ def retail_sentiment_agent(state):
     response = llm.invoke(prompt)
     analysis = response.content
 
-    return {"retail_sentiment_analysis": analysis}
+    state["retail_sentiment_analysis"] = analysis
+    return state

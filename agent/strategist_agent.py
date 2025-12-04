@@ -12,4 +12,5 @@ def strategist_agent(state):
     )
     
     response = llm.invoke(prompt)
-    return {"final_decision": response.content}
+    state["final_decision"] = response.content
+    return state

@@ -1,7 +1,7 @@
 from config import llm
 from src.prompt import PromptCollection
-from src.firecrawl import FirecrawlService
-from src.models import FundamentalAnalysisResult
+from src.firecrawl_service import FirecrawlService
+from src.models import TradingState
 
 def fundamental_analyst_agent(state):
     """
@@ -38,6 +38,6 @@ def fundamental_analyst_agent(state):
 
     prompt = PromptCollection.FundamentalAnalysis(scraped_data=combined_data)
 
-    fundamental_analysis = llm.with_structured_output(FundamentalAnalysisResult)
-    response = fundamental_analysis.invoke(prompt)
-    return response
+    response = llm.invoke(prompt)
+    state["fundamental_analysis"] = response.content
+    return state

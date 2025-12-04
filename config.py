@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from firecrawl import FirecrawlApp
-from alpha_vantage.timeseries import TimeSeries
 
 # Load environment variables from .env file
 load_dotenv()

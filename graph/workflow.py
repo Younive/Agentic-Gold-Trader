@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, END
-from src.models import AgentState
+from src.models import TradingState
 from agent.fundamental_agent import fundamental_analyst_agent
 from agent.technical_analyst_agent import technical_analyst_agent
 from agent.oi_analyst_agent import oi_analyst_agent
@@ -7,7 +7,7 @@ from agent.retail_sentiment_agent import retail_sentiment_agent
 from agent.strategist_agent import strategist_agent
 
 # Define the workflow graph
-workflow = StateGraph(AgentState)
+workflow = StateGraph(TradingState)
 
 # Add the nodes
 workflow.add_node("fundamental_analyst", fundamental_analyst_agent)

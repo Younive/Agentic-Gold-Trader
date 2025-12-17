@@ -3,7 +3,6 @@ import numpy as np
 from config import llm
 from src.prompt import PromptCollection
 from src.fetch_mt5_data import get_data
-from src.models import TradingState
 from smartmoneyconcepts import smc
 from scipy.signal import find_peaks
 
@@ -15,9 +14,12 @@ def technical_analyst_agent(state):
     print("Agent: Technical Analyst is running...")
     
     try:
-        
         print("Fetching data...")
         data = get_data(timeframe_str='H1')
+
+        if data.empty:
+            print("No data received (DataFrame is empty). Skipping analysis.")
+            return state
         
         print("Calculating indicators...")
         # Calculate indicators

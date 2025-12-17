@@ -1,0 +1,55 @@
+[
+  {
+    "id": "health_latency_spike",
+    "page_content": "CRITICAL FAILURE: Latency Spike. Order execution time exceeded 2000ms (2 seconds). Price slipped 12 ticks against entry. Technical Analysis on 1-minute timeframe is invalid when latency > 500ms.",
+    "metadata": {
+      "failure_mode": "infrastructure_lag",
+      "severity": "high",
+      "metric": "execution_speed_ms",
+      "threshold": 2000,
+      "recommended_action": "pause_trading"
+    }
+  },
+  {
+    "id": "health_martingale_loop",
+    "page_content": "LOGIC FAILURE: Rapid Fire Sizing. The bot attempted to open a new position with 2x size immediately after a loss to recover PnL. This indicates a logic error in the sizing algorithm. Martingale strategies are strictly banned.",
+    "metadata": {
+      "failure_mode": "risk_logic_error",
+      "severity": "critical",
+      "metric": "position_size_change",
+      "pattern": "doubling_down",
+      "recommended_action": "emergency_shutdown"
+    }
+  },
+  {
+    "id": "health_stale_feed",
+    "page_content": "DATA FAILURE: Stale Pricing. The price feed for XAU/USD has not updated for 60 seconds. Indicators (RSI/MACD) are flatlining. Trading on frozen data will result in rejected orders or bad fills upon reconnection.",
+    "metadata": {
+      "failure_mode": "data_feed_disconnect",
+      "severity": "high",
+      "metric": "last_tick_timestamp",
+      "threshold_seconds": 60,
+      "recommended_action": "reconnect_websocket"
+    }
+  },
+  {
+    "id": "health_api_rate_limit",
+    "page_content": "API ERROR: HTTP 429 (Too Many Requests). The bot is spamming the broker API with status checks or modification requests. This risks an IP ban. Reduce polling frequency immediately.",
+    "metadata": {
+      "failure_mode": "api_abuse",
+      "severity": "medium",
+      "metric": "api_calls_per_minute",
+      "recommended_action": "throttle_requests"
+    }
+  },
+  {
+    "id": "health_ghost_orders",
+    "page_content": "STATE MISMATCH: Ghost Order. The bot 'thinks' it is flat, but the Broker API reports an open position. This sync error creates risk of unmanaged exposure (no Stop Loss attached).",
+    "metadata": {
+      "failure_mode": "state_desync",
+      "severity": "critical",
+      "metric": "position_count_mismatch",
+      "recommended_action": "force_sync_positions"
+    }
+  }
+]

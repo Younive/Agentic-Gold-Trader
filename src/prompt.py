@@ -213,7 +213,7 @@ class PromptCollection:
         """
     
     @staticmethod
-    def CheifStatistician(fundamental_analysis: str, technical_analysis: str, market_sentiment_analysis: str, oi_analysis:str) -> str:
+    def CheifStatistician(fundamental_analysis: str, technical_analysis: str, market_sentiment_analysis: str, oi_analysis:str, rag_data: str) -> str:
         return f"""
         You are the Risk & Strategy Manager for an Algorithmic Trading Bot.
         Your job is NOT to predict the market, but to adjudicate conflicting signals based on our "Conservative Strategy" rules.
@@ -223,6 +223,7 @@ class PromptCollection:
         2. Technical Levels: {technical_analysis}
         3. Sentiment: {retail_sentiment_analysis}
         4. Order Flow: {oi_analysis}
+        5. Historical Context (RAG): {rag_data}
 
         **STRATEGY CONSTITUTION (The Rules):**
         1. **Confluence Check:** You may ONLY signal a trade if at least 3 out of 4 inputs agree on direction.
@@ -234,6 +235,9 @@ class PromptCollection:
         3. **Risk Management:**
            - Stop Loss (SL) MUST be calculated as: Entry Price +/- (1.5 * ATR provided in input).
            - Take Profit (TP) MUST be calculated as: Entry Price +/- (3.0 * ATR provided in input).
+        4. **Historical Insight:**
+           - Use the "Historical Context" to see if similar setups in the past succeeded or failed.
+           - If a similar setup had a negative outcome, increase caution or signal "WAIT" if confidence is marginal.
 
         **OUTPUT TASK:**
         Evaluate the inputs against the Rules. Return the decision in JSON.
@@ -244,7 +248,8 @@ class PromptCollection:
             "stop_loss": <float: calculated based on rule #3>,
             "take_profit": <float: calculated based on rule #3>,
             "violated_rules": ["<List any rules that failed, e.g. 'Conflict between Fund/Tech'>"],
-            "reasoning": "<Concise explanation>"
+            "reasoning": "<Concise explanation including any historical insight>",
+            "historical_similarity_note": "<Note on how past data influenced this decision>"
         }}
         """
         

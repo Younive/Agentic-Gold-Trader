@@ -1,0 +1,68 @@
+[
+  {
+    "id": "law_risk_daily_limit",
+    "page_content": "HARD STOP RULE: If Net Daily PnL reaches -3.0% of total equity, all trading is HALTED for the remainder of the 24-hour cycle. No new positions allowed under any circumstances.",
+    "metadata": {
+      "category": "risk_management",
+      "type": "circuit_breaker",
+      "priority": "critical",
+      "variable": "daily_drawdown_percent",
+      "threshold": -3.0
+    }
+  },
+  {
+    "id": "law_news_blackout",
+    "page_content": "NEWS EVENT RULE: No new entries are permitted 15 minutes before and 15 minutes after a 'High Impact' (Red Folder) USD economic release (CPI, NFP, FOMC, GDP). Spread widening and liquidity vacuums make technical analysis invalid during these windows.",
+    "metadata": {
+      "category": "execution",
+      "type": "blackout_window",
+      "priority": "high",
+      "trigger": "red_folder_event",
+      "buffer_minutes": 15
+    }
+  },
+  {
+    "id": "law_spread_protection",
+    "page_content": "LIQUIDITY RULE: Do not execute any trade if the Bid-Ask Spread on XAU/USD exceeds 50 pips (5.0 ticks). High spreads indicate a lack of liquidity or a hidden volatility event. Slippage risk is unacceptable.",
+    "metadata": {
+      "category": "execution",
+      "type": "liquidity_check",
+      "priority": "medium",
+      "variable": "current_spread",
+      "threshold_pips": 50
+    }
+  },
+  {
+    "id": "law_weekend_gap",
+    "page_content": "SESSION RULE: All intraday positions must be closed by Friday 16:00 EST. Holding positions over the weekend exposes the system to 'Gap Risk' caused by geopolitical events occurring while the market is closed.",
+    "metadata": {
+      "category": "risk_management",
+      "type": "time_constraint",
+      "priority": "high",
+      "trigger": "market_close_weekly"
+    }
+  },
+  {
+    "id": "law_rollover_avoidance",
+    "page_content": "ROLLOVER RULE: No trading between 16:55 EST and 18:05 EST. This is the daily banking rollover period where spreads widen artificially and technical indicators often print false signals due to low volume.",
+    "metadata": {
+      "category": "execution",
+      "type": "time_constraint",
+      "priority": "medium",
+      "window_start": "16:55",
+      "window_end": "18:05"
+    }
+  },
+  {
+    "id": "law_consecutive_loss_tilt",
+    "page_content": "ANTI-TILT RULE: If the system records 3 consecutive losses within a 60-minute window on the same asset, enter a mandatory 'Cool Down' period of 2 hours. The market regime likely shifted, and the current strategy is out of sync.",
+    "metadata": {
+      "category": "psychology_algo",
+      "type": "circuit_breaker",
+      "priority": "high",
+      "trigger": "consecutive_losses",
+      "count": 3,
+      "window_minutes": 60
+    }
+  }
+]

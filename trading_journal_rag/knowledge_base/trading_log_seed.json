@@ -1,0 +1,93 @@
+[
+  {
+    "id": "seed_log_01",
+    "page_content": "Trade Result: LOSS (-$550). Strategy: Breakout (Buy). Market Regime: Low Volatility (Range). Context: Price broke 2350 resistance by 2 ticks and immediately reversed. Volume was low (below 20-period MA). Resulted in a bull trap.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2023-11-15",
+      "outcome": "LOSS",
+      "pnl_normalized": -1.0,
+      "strategy": "breakout",
+      "market_regime": "RANGE_SCALPING",
+      "lesson": "Never trade breakouts when ADX is below 20. It is usually a fakeout."
+    }
+  },
+  {
+    "id": "seed_log_02",
+    "page_content": "Trade Result: WIN (+$1,200). Strategy: Trend Pullback (Buy). Market Regime: Strong Bull Trend. Context: Gold was making higher highs. Waited for a pullback to the 20 EMA on the 15m chart. Entered on a bullish engulfing candle. Held until previous high.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2023-11-18",
+      "outcome": "WIN",
+      "pnl_normalized": 2.2,
+      "strategy": "trend_pullback",
+      "market_regime": "TREND_FOLLOWING_BULL",
+      "lesson": "Trend is your friend. 20 EMA checks usually hold in strong trends."
+    }
+  },
+  {
+    "id": "seed_log_03",
+    "page_content": "Trade Result: CATASTROPHIC LOSS (-$1,500). Strategy: Mean Reversion (Short). Market Regime: News Event (CPI). Context: Tried to fade the initial spike after CPI data. Volatility expanded massively. Spread widened to 60 pips. Stop loss slipped significantly.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2023-12-02",
+      "outcome": "CATASTROPHIC_LOSS",
+      "pnl_normalized": -3.0,
+      "strategy": "news_fade",
+      "market_regime": "VOLATILITY_BREAKOUT",
+      "lesson": "Do not stand in front of a freight train. Never fade the first 15 mins of a Red Folder event."
+    }
+  },
+  {
+    "id": "seed_log_04",
+    "page_content": "Trade Result: LOSS (-$300). Strategy: Support Bounce (Buy). Market Regime: Trend Following Bear. Context: Price hit a major daily support level. I bought immediately. The bear trend was too strong, and price smashed through support without pausing.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2024-01-10",
+      "outcome": "LOSS",
+      "pnl_normalized": -1.0,
+      "strategy": "mean_reversion",
+      "market_regime": "TREND_FOLLOWING_BEAR",
+      "lesson": "Don't catch a falling knife. In a strong bear market, supports are meant to be broken."
+    }
+  },
+  {
+    "id": "seed_log_05",
+    "page_content": "Trade Result: WIN (+$400). Strategy: Range Scalp (Short). Market Regime: Range (Asian Session). Context: Price hit the top of the Bollinger Band during the quiet Asian session. RSI was 70. Shorted with a tight stop. Targetted the middle band.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2024-01-12",
+      "outcome": "WIN",
+      "pnl_normalized": 1.5,
+      "strategy": "range_scalp",
+      "market_regime": "RANGE_SCALPING",
+      "lesson": "Mean reversion works best when volume is low and market is sideways."
+    }
+  },
+  {
+    "id": "seed_log_06",
+    "page_content": "Trade Result: BREAK EVEN ($0). Strategy: Breakout. Market Regime: Choppy/Undefined. Context: Entered a breakout, price moved 10 pips, then stalled. I recognized the lack of momentum and manually closed the trade early before it reversed.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2024-01-15",
+      "outcome": "BREAK_EVEN",
+      "pnl_normalized": 0.0,
+      "strategy": "breakout",
+      "market_regime": "CHOPPY",
+      "lesson": "Aggressive trade management saved capital. If a breakout doesn't go immediately, get out."
+    }
+  },
+  {
+    "id": "seed_log_07",
+    "page_content": "Trade Result: LOSS (-$800). Strategy: Revenge Trade (Long). Market Regime: Trend Following Bear. Context: After getting stopped out on a Short, I flipped Long immediately out of anger/confusion, thinking 'it must reverse now'. It didn't.",
+    "metadata": {
+      "doc_type": "trade_log",
+      "date": "2024-02-01",
+      "outcome": "LOSS",
+      "pnl_normalized": -1.5,
+      "strategy": "discretionary_flip",
+      "market_regime": "TREND_FOLLOWING_BEAR",
+      "lesson": "Psychological tilt. Never flip direction immediately after a loss without a new setup."
+    }
+  }
+]
